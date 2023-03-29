@@ -43,8 +43,9 @@ class LeafletMap {
         });
 
         vis.theMap = L.map('my-map', {
-            center: [30, 0],
-            zoom: 2,
+
+            center: [39.15, -84.51],
+            zoom: 11,
             layers: [vis.base_layer]
         });
 
@@ -55,11 +56,47 @@ class LeafletMap {
         vis.overlay = d3.select(vis.theMap.getPanes().overlayPane)
         vis.svg = vis.overlay.select('svg').attr("pointer-events", "auto")
 
+        function nodeColor(color) {
+            if (color.agency_responsible == "Public Services") {
+                return 'yellow';
+            }
+            else if (color.agency_responsible == "Cinc Building Dept") {
+                return 'orange';
+            }
+            else if (color.agency_responsible == "Police Department") {
+                return 'steelblue';
+            }
+            else if (color.agency_responsible == "City Manager's Office") {
+                return 'grey';
+            }
+            else if (color.agency_responsible == "Dept of Trans and Eng") {
+                return 'green';
+            }
+            else if (color.agency_responsible == "Cinc Health Dept") {
+                return '#EF5350';
+            }
+            else if (color.agency_responsible == "Cin Water Works") {
+                return 'blue';
+            }
+            else if (color.agency_responsible == "Park Department") {
+                return '#81C784';
+            }
+            else if (color.agency_responsible == "Fire Dept") {
+                return '#B71C1C';
+            }
+            else if (color.agency_responsible == "Metropolitan Sewer") {
+                return 'darkgreen'
+            }
+            else {
+                return '#5E35B1';
+            };
+        };
+
         //these are the city locations, displayed as a set of dots 
         vis.Dots = vis.svg.selectAll('circle')
             .data(vis.data)
             .join('circle')
-            .attr("fill", "steelblue")
+            .attr("fill", nodeColor)
             .attr("stroke", "black")
             //Leaflet has to take control of projecting points. Here we are feeding the latitude and longitude coordinates to
             //leaflet so that it can project them on the coordinates of the view. Notice, we have to reverse lat and lon.
@@ -78,7 +115,9 @@ class LeafletMap {
                     .style('opacity', 1)
                     .style('z-index', 1000000)
                     // Format number with million and thousand separator
-                    .html(`<div class="tooltip-label">City: ${d.city}, population ${d3.format(',')(d.population)}</div>`);
+                    .html(`<div class="tooltip-label"><h3>Service ID: ${d.service_request_id}</h3> <li>Call type: ${d.service_name} </li> 
+                    <li>Request Date: ${d.requested_datetime}</li> <li> Updated Date: ${d.updated_datetime}</li> <li> Public agency: ${d.agency_responsible} </li>
+                    <li> Description: ${d.description} </li> </div>`);
 
             })
             .on('mousemove', (event) => {
@@ -90,7 +129,7 @@ class LeafletMap {
             .on('mouseleave', function () { //function to add mouseover event
                 d3.select(this).transition() //D3 selects the object we have moused over in order to perform operations on it
                     .duration('150') //how long we are transitioning between the two states (works like keyframes)
-                    .attr("fill", "steelblue") //change the fill
+                    .attr("fill", nodeColor) //change the fill
                     .attr('r', 3) //change radius
 
                 d3.select('#tooltip').style('opacity', 0);//turn off the tooltip
@@ -124,6 +163,8 @@ class LeafletMap {
         //   desiredMetersForPoint = 100; //or the uncertainty measure... =) 
         //   radiusSize = desiredMetersForPoint / metresPerPixel;
         // }
+
+
 
         //redraw based on new zoom- need to recalculate on-screen position
         vis.Dots
