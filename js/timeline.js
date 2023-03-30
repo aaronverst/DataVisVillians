@@ -1,147 +1,147 @@
 class Timeline {
 
-     /**
-     * Class constructor with basic configuration
-     * @param {Object}
-     * @param {Array}
-     */
-     constructor(_config, _data) {
+    /**
+    * Class constructor with basic configuration
+    * @param {Object}
+    * @param {Array}
+    */
+    constructor(_config, _data) {
         this.config = {
             parentElement: _config.parentElement,
             width: 800,
-            height:  300,
-            margin:  {top: 30, right: 10, bottom: 105, left: 55},
+            height: 300,
+            margin: { top: 30, right: 10, bottom: 105, left: 55 },
             tooltipPadding: _config.tooltipPadding || 15,
             contextHeight: 45,
-            contextMargin: {top: 350, right: 10, bottom: 40, left: 45}
+            contextMargin: { top: 350, right: 10, bottom: 40, left: 45 }
         }
         this.data = _data;
         this.initVis();
     }
 
-initVis() {
+    initVis() {
 
-    let vis = this;
-    vis.data.sort();
+        let vis = this;
+        vis.data.sort();
 
-// These are just placeholders 
+        // These are just placeholders 
 
-    const containerWidth = vis.config.width + vis.config.margin.left + vis.config.margin.right;
-    const containerHeight = vis.config.height + vis.config.margin.top + vis.config.margin.bottom;
-    
-    // vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
-    // vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
+        const containerWidth = vis.config.width + vis.config.margin.left + vis.config.margin.right;
+        const containerHeight = vis.config.height + vis.config.margin.top + vis.config.margin.bottom;
 
-// Append the SVG object to the div with id "timeline"
-    //   .append("g")
-    //   .attr("transform",
-    //     "translate(" + margin.left + "," + margin.top + ")");
+        // vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
+        // vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
-// Read the data from the TSV file
+        // Append the SVG object to the div with id "timeline"
+        //   .append("g")
+        //   .attr("transform",
+        //     "translate(" + margin.left + "," + margin.top + ")");
+
+        // Read the data from the TSV file
 
 
-    // Group the data by week number and tally the service request IDs
-    // vis.groupedData = d3.group()
-    //     .key(function (d) { return d.week_number; })
-    //     .rollup(function (v) { return v.length; })
-    //     .entries(data);
+        // Group the data by week number and tally the service request IDs
+        // vis.groupedData = d3.group()
+        //     .key(function (d) { return d.week_number; })
+        //     .rollup(function (v) { return v.length; })
+        //     .entries(data);
 
-    // Define the x-axis scale
-    vis.xScaleFocus = d3.scaleTime()
-        .range([0, vis.config.width])
-          
+        // Define the x-axis scale
+        vis.xScaleFocus = d3.scaleTime()
+            .range([0, vis.config.width])
 
-    vis.xScaleContext = d3.scaleTime()
-        .range([0, vis.config.width]);
-  
-    vis.yScaleFocus = d3.scaleLinear()
-        .range([vis.config.height, 0])
-        .nice();
-  
-    vis.yScaleContext = d3.scaleLinear()
-        .range([vis.config.contextHeight, 0])
-        .nice();
 
-    vis.xAxisFocus = d3.axisBottom(vis.xScaleFocus).tickSizeOuter(0).tickFormat(d3.format("d"));
-    vis.xAxisContext = d3.axisBottom(vis.xScaleContext).tickSizeOuter(0).tickFormat(d3.format("d"));
-    vis.yAxisFocus = d3.axisLeft(vis.yScaleFocus);
+        vis.xScaleContext = d3.scaleTime()
+            .range([0, vis.config.width]);
 
-    vis.svg = d3.select(vis.config.parentElement)
-        .attr("width", containerWidth)
-        .attr("height", containerHeight);
+        vis.yScaleFocus = d3.scaleLinear()
+            .range([vis.config.height, 0])
+            .nice();
 
-    vis.svg.append("text")
-        .attr("transform", "translate(0,0)")
-        .attr("x", 34)
-        .attr("y", 10)
-        .attr("font-size", "12px")
-        .text("Exoplanets' Stars Stellar Values");
+        vis.yScaleContext = d3.scaleLinear()
+            .range([vis.config.contextHeight, 0])
+            .nice();
 
-    vis.focus = vis.svg.append('g')
-        .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
-  
-    // Append empty x-axis group and move it to the bottom of the chart
-    vis.focus.append('defs').append('clipPath')
-        .attr('id', 'clip')
-        .append('rect')
-        .attr('width', vis.config.width)
-        .attr('height', vis.config.height);
+        vis.xAxisFocus = d3.axisBottom(vis.xScaleFocus).tickSizeOuter(0).tickFormat(d3.format("d"));
+        vis.xAxisContext = d3.axisBottom(vis.xScaleContext).tickSizeOuter(0).tickFormat(d3.format("d"));
+        vis.yAxisFocus = d3.axisLeft(vis.yScaleFocus);
 
-    vis.focusLinePath = vis.focus.append('path')
-        .attr('class', 'chart-line');
+        vis.svg = d3.select(vis.config.parentElement)
+            .attr("width", containerWidth)
+            .attr("height", containerHeight);
 
-    vis.xAxisFocusG = vis.focus.append('g')
-        .attr('class', 'axis x-axis')
-        .attr('transform', `translate(0,${vis.config.height})`);
+        vis.svg.append("text")
+            .attr("transform", "translate(0,0)")
+            .attr("x", 240)
+            .attr("y", 11)
+            .attr("font-size", "14px")
+            .text("Number of Calls Made According to Week Number (June through August)");
 
-    vis.yAxisFocusG = vis.focus.append('g')
-        .attr('class', 'axis y-axis');
+        vis.focus = vis.svg.append('g')
+            .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
-    vis.tooltipTrackingArea = vis.focus.append('rect')
-        .attr('width', vis.config.width)
-        .attr('height', vis.config.height)
-        .attr('fill', 'none')
-        .attr('pointer-events', 'all');
+        // Append empty x-axis group and move it to the bottom of the chart
+        vis.focus.append('defs').append('clipPath')
+            .attr('id', 'clip')
+            .append('rect')
+            .attr('width', vis.config.width)
+            .attr('height', vis.config.height);
 
-    // Empty tooltip group (hidden by default)
-    vis.tooltip = vis.focus.append('g')
-        .attr('class', 'tooltip2')
-        .style('display', 'none');
+        vis.focusLinePath = vis.focus.append('path')
+            .attr('class', 'chart-line');
 
-    vis.tooltip.append('circle')
-        .attr('r', 4);
+        vis.xAxisFocusG = vis.focus.append('g')
+            .attr('class', 'axis x-axis')
+            .attr('transform', `translate(0,${vis.config.height})`);
 
-    vis.tooltip.append('text');
+        vis.yAxisFocusG = vis.focus.append('g')
+            .attr('class', 'axis y-axis');
 
-// 
-// Append context group with x- and y-axes
-    vis.context = vis.svg.append('g')
-        .attr('transform', `translate(${vis.config.contextMargin.left},${vis.config.contextMargin.top})`);
+        vis.tooltipTrackingArea = vis.focus.append('rect')
+            .attr('width', vis.config.width)
+            .attr('height', vis.config.height)
+            .attr('fill', 'none')
+            .attr('pointer-events', 'all');
 
-    vis.contextAreaPath = vis.context.append('path')
-        .attr('class', 'chart-area');
+        // Empty tooltip group (hidden by default)
+        vis.tooltip = vis.focus.append('g')
+            .attr('class', 'tooltip2')
+            .style('display', 'none');
 
-    vis.xAxisContextG = vis.context.append('g')
-        .attr('class', 'axis x-axis')
-        .attr('transform', `translate(0,${vis.config.contextHeight})`);
+        vis.tooltip.append('circle')
+            .attr('r', 4);
 
-    vis.brushG = vis.context.append('g')
-        .attr('class', 'brush x-brush');
+        vis.tooltip.append('text');
 
-    vis.brush = d3.brushX()
-        .extent([[0, 0], [vis.config.width, vis.config.contextHeight]])
-        .on('brush', function({selection}) {
-          if (selection) vis.brushed(selection);
-        })
-        .on('end', function({selection}) {
-          if (!selection) vis.brushed(null);
-        });
+        // 
+        // Append context group with x- and y-axes
+        vis.context = vis.svg.append('g')
+            .attr('transform', `translate(${vis.config.contextMargin.left},${vis.config.contextMargin.top})`);
 
-    vis.updateVis();
+        vis.contextAreaPath = vis.context.append('path')
+            .attr('class', 'chart-area');
+
+        vis.xAxisContextG = vis.context.append('g')
+            .attr('class', 'axis x-axis')
+            .attr('transform', `translate(0,${vis.config.contextHeight})`);
+
+        vis.brushG = vis.context.append('g')
+            .attr('class', 'brush x-brush');
+
+        vis.brush = d3.brushX()
+            .extent([[0, 0], [vis.config.width, vis.config.contextHeight]])
+            .on('brush', function ({ selection }) {
+                if (selection) vis.brushed(selection);
+            })
+            .on('end', function ({ selection }) {
+                if (!selection) vis.brushed(null);
+            });
+
+        vis.updateVis();
 
     };
 
-updateVis() {
+    updateVis() {
         let vis = this;
 
         vis.xAxisFocusG.append('text')
@@ -151,16 +151,16 @@ updateVis() {
             .attr("font-size", "12px")
             .attr("stroke", "black")
             .text("Year of Exoplanet Discovery");
-          
+
 
         vis.yAxisFocusG.append('text')
             .attr("transform", "rotate(-90)")
             .attr("dy", "-13.5em")
-            .attr("y", vis.config.height -200)
+            .attr("y", vis.config.height - 200)
             .attr("x", vis.config.width - 860)
             .attr("font-size", "12px")
             .attr("stroke", "black")
-            .text("Number of Exoplanets per Year")
+            .text("Number of Service Calls")
 
         // const weekNumber = d3.rollups(vis.data, v => v.length, d => d.week_number);
 
@@ -183,7 +183,7 @@ updateVis() {
             .y1(d => vis.yScaleContext(vis.yValue(d)))
             .y0(vis.config.contextHeight);
 
-  // Set the scale input domains
+        // Set the scale input domains
         vis.xScaleFocus.domain(d3.extent(vis.data, vis.xValue));
         vis.yScaleFocus.domain(d3.extent(vis.data, vis.yValue));
         vis.xScaleContext.domain(vis.xScaleFocus.domain());
@@ -191,7 +191,7 @@ updateVis() {
         vis.bisectDate = d3.bisector(vis.xValue).left;
 
         vis.renderVis();
-  
+
     };
 
     renderVis() {
@@ -206,63 +206,63 @@ updateVis() {
             .datum(vis.data)
             .attr('d', vis.area);
 
-  
+
         vis.tooltipTrackingArea
-          .on('mouseenter', () => {
-            vis.tooltip.style('display', 'block');
-          })
-          .on('mouseleave', () => {
-            vis.tooltip.style('display', 'none');
-          })
-          .on('mousemove', function(event) {
-            // Get date that corresponds to current mouse x-coordinate
-            const xPos = d3.pointer(event, this)[0]; // First array element is x, second is y
-            const date = vis.xScaleFocus.invert(xPos);
-  
-            // Find nearest data point
-            const index = vis.bisectDate(vis.data, date, 1);
-            const a = vis.data[index - 1];
-            const b = vis.data[index];
-            const d = b && (date - a[0] > b[0] - date) ? b : a; 
-  
-            // Update tooltip
-            vis.tooltip.select('circle')
-                .attr('transform', `translate(${vis.xScaleFocus(d[0])},${vis.yScaleFocus(d[1])})`);
-            
-            vis.tooltip.select('text')
-                .attr('transform', `translate(${vis.xScaleFocus(d[0])},${(vis.yScaleFocus(d[1]) - 15)})`)
-                .text(Math.round(d[1]));
-          });
-      
-      // Update the axes
+            .on('mouseenter', () => {
+                vis.tooltip.style('display', 'block');
+            })
+            .on('mouseleave', () => {
+                vis.tooltip.style('display', 'none');
+            })
+            .on('mousemove', function (event) {
+                // Get date that corresponds to current mouse x-coordinate
+                const xPos = d3.pointer(event, this)[0]; // First array element is x, second is y
+                const date = vis.xScaleFocus.invert(xPos);
+
+                // Find nearest data point
+                const index = vis.bisectDate(vis.data, date, 1);
+                const a = vis.data[index - 1];
+                const b = vis.data[index];
+                const d = b && (date - a[0] > b[0] - date) ? b : a;
+
+                // Update tooltip
+                vis.tooltip.select('circle')
+                    .attr('transform', `translate(${vis.xScaleFocus(d[0])},${vis.yScaleFocus(d[1])})`);
+
+                vis.tooltip.select('text')
+                    .attr('transform', `translate(${vis.xScaleFocus(d[0])},${(vis.yScaleFocus(d[1]) - 15)})`)
+                    .text(Math.round(d[1]));
+            });
+
+        // Update the axes
         vis.xAxisFocusG.call(vis.xAxisFocus);
         vis.yAxisFocusG.call(vis.yAxisFocus);
         vis.xAxisContextG.call(vis.xAxisContext);
 
-        const defaultBrushSelection = [vis.xScaleFocus(new Date(29)), vis.xScaleContext.range()[1]];
-            vis.brushG
+        const defaultBrushSelection = [vis.xScaleFocus(new Date(23)), vis.xScaleContext.range()[1]];
+        vis.brushG
             .call(vis.brush)
             .call(vis.brush.move, defaultBrushSelection);
-  
+
     }
 
     brushed(selection) {
-      let vis = this;
-  
-      // Check if the brush is still active or if it has been removed
-      if (selection) {
-        // Convert given pixel coordinates (range: [x0,x1]) into a time period (domain: [Date, Date])
-        const selectedDomain = selection.map(vis.xScaleContext.invert, vis.xScaleContext);
-  
-        // Update x-scale of the focus view accordingly
-        vis.xScaleFocus.domain(selectedDomain);
-      } else {
-        // Reset x-scale of the focus view (full time period)
-        vis.xScaleFocus.domain(vis.xScaleContext.domain());
-      }
-  
-      // Redraw line and update x-axis labels in focus view
-      vis.focusLinePath.attr('d', vis.line);
-      vis.xAxisFocusG.call(vis.xAxisFocus);
+        let vis = this;
+
+        // Check if the brush is still active or if it has been removed
+        if (selection) {
+            // Convert given pixel coordinates (range: [x0,x1]) into a time period (domain: [Date, Date])
+            const selectedDomain = selection.map(vis.xScaleContext.invert, vis.xScaleContext);
+
+            // Update x-scale of the focus view accordingly
+            vis.xScaleFocus.domain(selectedDomain);
+        } else {
+            // Reset x-scale of the focus view (full time period)
+            vis.xScaleFocus.domain(vis.xScaleContext.domain());
+        }
+
+        // Redraw line and update x-axis labels in focus view
+        vis.focusLinePath.attr('d', vis.line);
+        vis.xAxisFocusG.call(vis.xAxisFocus);
     }
-        };
+};
