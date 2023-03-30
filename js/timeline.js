@@ -10,7 +10,7 @@ class Timeline {
             parentElement: _config.parentElement,
             width: 800,
             height: 300,
-            margin: { top: 30, right: 10, bottom: 105, left: 55 },
+            margin: { top: 30, right: 10, bottom: 105, left: 70 },
             tooltipPadding: _config.tooltipPadding || 15,
             contextHeight: 45,
             contextMargin: { top: 350, right: 10, bottom: 40, left: 45 }
@@ -28,23 +28,6 @@ class Timeline {
 
         const containerWidth = vis.config.width + vis.config.margin.left + vis.config.margin.right;
         const containerHeight = vis.config.height + vis.config.margin.top + vis.config.margin.bottom;
-
-        // vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
-        // vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
-
-        // Append the SVG object to the div with id "timeline"
-        //   .append("g")
-        //   .attr("transform",
-        //     "translate(" + margin.left + "," + margin.top + ")");
-
-        // Read the data from the TSV file
-
-
-        // Group the data by week number and tally the service request IDs
-        // vis.groupedData = d3.group()
-        //     .key(function (d) { return d.week_number; })
-        //     .rollup(function (v) { return v.length; })
-        //     .entries(data);
 
         // Define the x-axis scale
         vis.xScaleFocus = d3.scaleTime()
@@ -150,7 +133,7 @@ class Timeline {
             .attr("x", vis.config.width - 400)
             .attr("font-size", "12px")
             .attr("stroke", "black")
-            .text("Year of Exoplanet Discovery");
+            .text("Week Number");
 
 
         vis.yAxisFocusG.append('text')
@@ -162,14 +145,6 @@ class Timeline {
             .attr("stroke", "black")
             .text("Number of Service Calls")
 
-        // const weekNumber = d3.rollups(vis.data, v => v.length, d => d.week_number);
-
-        // vis.aggregatedData = Array.from(weekNumber, ([key, count]) => ({ key, count }));
-        // const orderedKeys = [23,24,25,26,27,28,29,30,31,32,33,34,35,36];
-
-        // vis.aggregatedData = vis.aggregatedData.sort((a,b) => {
-        //     return orderedKeys.indexOf(a.key) - orderedKeys.indexOf(b.key);
-        //   });
 
         vis.xValue = d => d[0];
         vis.yValue = d => d[1];

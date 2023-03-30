@@ -35,20 +35,46 @@ class LeafletMap {
         vis.stUrl = 'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.{ext}';
         vis.stAttr = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
+        var Stadia_AlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+            maxZoom: 20,
+            attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+        });
+        var Thunderforest_MobileAtlas = L.tileLayer('https://{s}.tile.thunderforest.com/mobile-atlas/{z}/{x}/{y}.png?apikey={apikey}', {
+            attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            apikey: '27d5774d815b4b54933de70941dd2b8f',
+            maxZoom: 22
+        });
+        var Thunderforest_SpinalMap = L.tileLayer('https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png?apikey={apikey}', {
+            attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            apikey: '27d5774d815b4b54933de70941dd2b8f',
+            maxZoom: 22
+        });
+        var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        });
         //this is the base map layer, where we are showing the map background
         vis.base_layer = L.tileLayer(vis.stUrl, {
             id: 'esri-image',
             attribution: vis.esriAttr,
             ext: 'png'
         });
-
         vis.theMap = L.map('my-map', {
-
             center: [39.15, -84.51],
-            zoom: 11,
+            zoom: 12,
+            minZoom: 7,
+            maxZoom: 17,
             layers: [vis.base_layer]
         });
+        //Stadia_AlidadeSmoothDark.addTo(vis.theMap);
 
+        var baseMaps = {
+            "Default Mode": vis.base_layer,
+            "Major Roadways": Thunderforest_MobileAtlas,
+            "Satellite View": Esri_WorldImagery,
+            "Dark Mode": Stadia_AlidadeSmoothDark,
+            "Super Dark Mode": Thunderforest_SpinalMap
+        };
+        var layerControl = L.control.layers(baseMaps).addTo(vis.theMap);
         //if you stopped here, you would just have a map
 
         //initialize svg for d3 to add to map
