@@ -19,3 +19,84 @@
     font-size: 10px;
     color: #888;
 }
+
+#tooltip1 {
+    position: absolute;
+    display: none;
+    background: #fff;
+    box-shadow: 3px 3px 3px 0px rgb(92 92 92 / 0.5);
+    border: 1px solid #ddd;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px;
+    min-width: 160px;
+    color: #333;
+  }
+  .tooltip-title1 {
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  #tooltip1 ul {
+    margin: 5px 0 0 0;
+    padding-left: 20px;
+  }
+
+  #start-week-input {
+    width: 60px;
+  }
+  
+  .source {
+    margin-top: 40px;
+    font-size: 10px;
+    color: #888;
+  }
+  .source a {
+    color: #888;
+  }
+
+  #tooltip2 {
+    position: absolute;
+    display: none;
+    background: #fff;
+    box-shadow: 3px 3px 3px 0px rgb(92 92 92 / 0.5);
+    border: 1px solid #ddd;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px;
+    min-width: 160px;
+    color: #333;
+  }
+  .tooltip-title2 {
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  #tooltip2 ul {
+    margin: 5px 0 0 0;
+    padding-left: 20px;
+  }
+
+  .tooltip2 circle {
+    fill: none;
+    stroke: #78bd39;
+  }
+  .tooltip2 text {
+    fill: #78bd39;
+  }
+  .chart-area {
+    fill: #e9eff5;
+  }
+  .chart-line {
+    fill: none;
+    stroke: #517390;
+    stroke-width: 2px;
+  }
+  .axis text {
+    font-size: .7rem;
+    fill: #6b6b6b;
+  }
+  
+  .domain, .axis .tick line {
+    stroke: #2b2b2b;
+  }
