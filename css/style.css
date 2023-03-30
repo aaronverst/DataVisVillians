@@ -1,6 +1,8 @@
 #my-map {
-  width: 90%;
+  width: 99.7%;
   height: 750px;
+  border-style: inset;
+  border-radius: 40px;
 }
 
 #tooltip {
@@ -121,4 +123,23 @@ svg {
 
 text {
   margin-left: 20px;
+}
+
+div.map {
+  border-color: #0e0e0e;
+  border-style: inset;
+  border-radius: 40px;
+
+  border-width: 5px;
+}
+
+h1 {
+  font-size: 2em;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  text-align: center;
+  margin-top: 0.67em;
+  margin-bottom: 0.67em;
+  margin-left: 0;
+  margin-right: 0;
+  font-weight: bold;
 }
