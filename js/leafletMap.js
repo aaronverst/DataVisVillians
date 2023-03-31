@@ -35,6 +35,7 @@ class LeafletMap {
         vis.stUrl = 'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.{ext}';
         vis.stAttr = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
+        //Defining additional map backgrounds 
         var Stadia_AlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
             maxZoom: 20,
             attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
@@ -65,8 +66,8 @@ class LeafletMap {
             maxZoom: 17,
             layers: [vis.base_layer]
         });
-        //Stadia_AlidadeSmoothDark.addTo(vis.theMap);
 
+        //Defining map background names
         var baseMaps = {
             "Default Mode": vis.base_layer,
             "Major Roadways": Thunderforest_MobileAtlas,
@@ -74,6 +75,8 @@ class LeafletMap {
             "Dark Mode": Stadia_AlidadeSmoothDark,
             "Super Dark Mode": Thunderforest_SpinalMap
         };
+
+        //Implements map customization GUI
         var layerControl = L.control.layers(baseMaps).addTo(vis.theMap);
         //if you stopped here, you would just have a map
 
@@ -83,6 +86,7 @@ class LeafletMap {
         vis.svg = vis.overlay.select('svg').attr("pointer-events", "auto")
 
         function nodeColor(color) {
+
             if (color.agency_responsible == "Public Services") {
                 return 'yellow';
             }

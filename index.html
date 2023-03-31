@@ -11,18 +11,25 @@
 
 <body>
     <!-- Add HTML content, SVG drawing area, ... -->
-    <div id="my-map"></div>
-
-    <div id="tooltip2"></div>
+    <h1>DataVis Villians Interactive Map</h1>
+    <div class="map">
+        <div id="my-map"></div>
+        <div id="tooltip2"></div>
+    </div>
 
     <div>
         Start Week: <input type="number" value="23" min="23" max="36" id="start-week-input">
     </div>
     <svg id="timeline"></svg>
+    <svg id="weekdayBarchart"></svg>
+    <svg id="agencyBarchart"></svg>
+    <div id="tooltip1"></div>
 
-    <div class="chart"></div>
+    <div class="circlechart"> random text do you see me
+        <svg id="circlechart"></svg>
+    </div>
 
-    <!-- <div id="tooltip1"></div> -->
+
 
     <!-- D3 bundle -->
     <script src="js/d3.v6.min.js"></script>
@@ -34,6 +41,8 @@
     <script src="js/leafletMap.js"></script>
     <script src="js/timeline.js"></script>
     <script src="js/CircleChart.js"></script>
+    <script src="js/weekdayBarchart.js"></script>
+    <script src="js/agencyBarchart.js"></script>
 
     <div id="tooltip"></div>
 
