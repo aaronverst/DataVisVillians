@@ -22,7 +22,7 @@ class Timeline {
     initVis() {
 
         let vis = this;
-        vis.data.sort();
+        //vis.data.sort();
 
         // These are just placeholders 
 
@@ -71,7 +71,8 @@ class Timeline {
             .attr('height', vis.config.height);
 
         vis.focusLinePath = vis.focus.append('path')
-            .attr('class', 'chart-line');
+            .attr('class', 'chart-line')
+            .style('stroke', '#8AAC80');
 
         vis.xAxisFocusG = vis.focus.append('g')
             .attr('class', 'axis x-axis')
@@ -146,6 +147,18 @@ class Timeline {
             .text("Number of Service Calls")
 
 
+        const aggregatedDataMap = d3.rollups(vis.data, v => v.length, d => d.week_number);
+
+        vis.aggregatedData = aggregatedDataMap;
+        vis.aggregatedData.sort();
+
+        // const orderedKeys = ['23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36'];
+        // vis.aggregatedData = vis.aggregatedData.sort((a, b) => {
+        //     return orderedKeys.indexOf(a.key) - orderedKeys.indexOf(b.key);
+        // });
+
+        console.log(vis.aggregatedData);
+
         vis.xValue = d => d[0];
         vis.yValue = d => d[1];
 
@@ -159,8 +172,8 @@ class Timeline {
             .y0(vis.config.contextHeight);
 
         // Set the scale input domains
-        vis.xScaleFocus.domain(d3.extent(vis.data, vis.xValue));
-        vis.yScaleFocus.domain(d3.extent(vis.data, vis.yValue));
+        vis.xScaleFocus.domain(d3.extent(vis.aggregatedData, vis.xValue));
+        vis.yScaleFocus.domain(d3.extent(vis.aggregatedData, vis.yValue));
         vis.xScaleContext.domain(vis.xScaleFocus.domain());
         vis.yScaleContext.domain(vis.yScaleFocus.domain());
         vis.bisectDate = d3.bisector(vis.xValue).left;
@@ -173,12 +186,15 @@ class Timeline {
 
         let vis = this;
 
+        vis.xValue = d => d[0];
+        vis.yValue = d => d[1];
+
         vis.focusLinePath
-            .datum(vis.data)
+            .datum(vis.aggregatedData)
             .attr('d', vis.line);
 
         vis.contextAreaPath
-            .datum(vis.data)
+            .datum(vis.aggregatedData)
             .attr('d', vis.area);
 
 
@@ -195,9 +211,9 @@ class Timeline {
                 const date = vis.xScaleFocus.invert(xPos);
 
                 // Find nearest data point
-                const index = vis.bisectDate(vis.data, date, 1);
-                const a = vis.data[index - 1];
-                const b = vis.data[index];
+                const index = vis.bisectDate(vis.aggregatedData, date, 1);
+                const a = vis.aggregatedData[index - 1];
+                const b = vis.aggregatedData[index];
                 const d = b && (date - a[0] > b[0] - date) ? b : a;
 
                 // Update tooltip
@@ -207,7 +223,23 @@ class Timeline {
                 vis.tooltip.select('text')
                     .attr('transform', `translate(${vis.xScaleFocus(d[0])},${(vis.yScaleFocus(d[1]) - 15)})`)
                     .text(Math.round(d[1]));
-            });
+            })
+
+        // vis.brushG
+        //     .data(vis.aggregatedData)
+        //     .on('click', function (event, d) {
+        //         let value = arrayToObject(vis.aggregatedData, aggregatedDataMap);
+        //         console.log(value);
+        //         const isActive = callFilter.includes(value.key);
+        //         if (isActive) {
+        //             callFilter = callFilter.filter(f => f !== (value.key)); // Remove filter
+        //         } else {
+        //             callFilter.push(value.key); // Append filter
+        //         }
+        //         brushFilter(); // Call global function to update scatter plot
+        //         d3.select(this).classed('active', !isActive); // Add class to style active filters with CSS
+        //     });
+
 
         // Update the axes
         vis.xAxisFocusG.call(vis.xAxisFocus);
@@ -223,11 +255,22 @@ class Timeline {
 
     brushed(selection) {
         let vis = this;
+        const aggregatedDataMap = d3.rollups(vis.data, v => v.length, d => d.week_number);
 
         // Check if the brush is still active or if it has been removed
         if (selection) {
-            // Convert given pixel coordinates (range: [x0,x1]) into a time period (domain: [Date, Date])
             const selectedDomain = selection.map(vis.xScaleContext.invert, vis.xScaleContext);
+            // Convert given pixel coordinates (range: [x0,x1]) into a time period (domain: [Date, Date])
+            let value = arrayToObject(vis.aggregatedData, aggregatedDataMap);
+            console.log(value);
+            const isActive = callFilter.includes(value.key);
+            if (isActive) {
+                callFilter = callFilter.filter(f => f !== (value.key)); // Remove filter
+            } else {
+                callFilter.push(value.key); // Append filter
+            }
+            brushFilter(); // Call global function to update scatter plot
+            //d3.select(this).classed('active', !isActive); // Add class to style active filters with CSS
 
             // Update x-scale of the focus view accordingly
             vis.xScaleFocus.domain(selectedDomain);
@@ -241,3 +284,15 @@ class Timeline {
         vis.xAxisFocusG.call(vis.xAxisFocus);
     }
 };
+
+function arrayToObject(dataMap, data) {
+
+    dataMap = Array.from(data, ([key, count]) => ({ key, count }));
+
+    const orderedKeys = ['23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36'];
+    dataMap = dataMap.sort((a, b) => {
+        return orderedKeys.indexOf(a.key) - orderedKeys.indexOf(b.key);
+    });
+    console.log(dataMap);
+    return dataMap;
+}

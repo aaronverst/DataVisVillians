@@ -4,7 +4,7 @@ class CircleChart {
         this.data = data;
         this.radius = Math.min(400, 400) / 2;
         this.initVis();
-        this.renderVis();
+        this.updateVis();
     }
 
     initVis() {
@@ -12,10 +12,10 @@ class CircleChart {
             .range(d3.schemeCategory10);
 
         this.svg = d3.select(this.selector)
-            .append("svg")
             .attr("width", 400)
-            .attr("height", 400)
-            .append("g")
+            .attr("height", 400);
+
+        this.svg.append('g')
             .attr("transform", `translate(${this.radius}, ${this.radius})`);
 
         this.tooltip = d3.select(this.selector)
@@ -24,7 +24,7 @@ class CircleChart {
             .style("opacity", 0);
     }
 
-    renderVis() {
+    updateVis() {
         const pie = d3.pie()
             .sort(null)
             .value(d => d.count);
@@ -78,6 +78,3 @@ class CircleChart {
     }
 }
 
-d3.tsv("data/June_August_data_2.tsv").then(data => {
-    new CircleChart(".chart", data);
-});
