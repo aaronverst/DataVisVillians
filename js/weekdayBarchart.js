@@ -144,7 +144,7 @@ class WeekdayBarchart {
             .style('opacity', 1)
             .style('fill', "#8AAC80")
             .on('mouseover', (event, d) => {
-                d3.select('#tooltip1')
+                d3.select('#tooltip3')
                     .style('display', 'block')
                     .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
                     .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
