@@ -2,6 +2,7 @@ let _data, timeline, leafletMap;
 let callFilter = [];
 let weekNumber = [];
 let count = 0;
+
 d3.tsv('data/June_August_data_2.tsv')
     .then(data => {
         //console.log(data[0]);
@@ -23,6 +24,8 @@ d3.tsv('data/June_August_data_2.tsv')
         timeline = new Timeline({ parentElement: '#timeline' }, data);
         weekdayBarchart = new WeekdayBarchart({ parentElement: '#weekdayBarchart' }, data);
         agencyBarchart = new agencyBarchart({ parentElement: '#agencyBarchart' }, data);
+        wordcloud = new Wordcloud({ parentElement: '#wordcloud' }, data);
+
         // CircleChart = new CircleChart({ parentElement: '#circlechart' }, data);
 
         leafletMap.updateVis();

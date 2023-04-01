@@ -89,7 +89,7 @@ class Timeline {
 
         // Empty tooltip group (hidden by default)
         vis.tooltip = vis.focus.append('g')
-            .attr('class', 'tooltip2')
+            .attr('class', 'tooltdip2')
             .style('display', 'none');
 
         vis.tooltip.append('circle')
