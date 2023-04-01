@@ -17,6 +17,7 @@ class LeafletMap {
      * We initialize scales/axes and append static elements, such as axis titles.
      */
     initVis() {
+
         let vis = this;
 
         //ESRI
@@ -59,6 +60,8 @@ class LeafletMap {
             attribution: vis.esriAttr,
             ext: 'png'
         });
+
+        vis.zipcodeLayer = L.tileLayer()
         vis.theMap = L.map('my-map', {
             center: [39.15, -84.51],
             zoom: 12,
@@ -122,7 +125,68 @@ class LeafletMap {
             };
         };
 
-        //these are the city locations, displayed as a set of dots 
+        //handler here for updating the map, as you zoom in and out           
+        vis.theMap.on("zoomend", function () {
+            vis.updateVis();
+        });
+
+    }
+
+    updateVis() {
+        let vis = this;
+
+        function nodeColor(color) {
+
+            if (color.agency_responsible == "Public Services") {
+                return 'yellow';
+            }
+            else if (color.agency_responsible == "Cinc Building Dept") {
+                return 'orange';
+            }
+            else if (color.agency_responsible == "Police Department") {
+                return 'steelblue';
+            }
+            else if (color.agency_responsible == "City Manager's Office") {
+                return 'grey';
+            }
+            else if (color.agency_responsible == "Dept of Trans and Eng") {
+                return 'green';
+            }
+            else if (color.agency_responsible == "Cinc Health Dept") {
+                return '#EF5350';
+            }
+            else if (color.agency_responsible == "Cin Water Works") {
+                return 'blue';
+            }
+            else if (color.agency_responsible == "Park Department") {
+                return '#81C784';
+            }
+            else if (color.agency_responsible == "Fire Dept") {
+                return '#B71C1C';
+            }
+            else if (color.agency_responsible == "Metropolitan Sewer") {
+                return 'darkgreen'
+            }
+            else {
+                return '#5E35B1';
+            };
+        };
+
+        //want to see how zoomed in you are? 
+        // console.log(vis.map.getZoom()); //how zoomed am I
+
+        //want to control the size of the radius to be a certain number of meters? 
+        vis.radiusSize = 3;
+
+        // if( vis.theMap.getZoom > 15 ){
+        //   metresPerPixel = 40075016.686 * Math.abs(Math.cos(map.getCenter().lat * Math.PI/180)) / Math.pow(2, map.getZoom()+8);
+        //   desiredMetersForPoint = 100; //or the uncertainty measure... =) 
+        //   radiusSize = desiredMetersForPoint / metresPerPixel;
+        // }
+
+
+
+        //redraw based on new zoom- need to recalculate on-screen position
         vis.Dots = vis.svg.selectAll('circle')
             .data(vis.data)
             .join('circle')
@@ -133,7 +197,7 @@ class LeafletMap {
             //Finally, the returned conversion produces an x and y point. We have to select the the desired one using .x or .y
             .attr("cx", d => vis.theMap.latLngToLayerPoint([d.latitude, d.longitude]).x)
             .attr("cy", d => vis.theMap.latLngToLayerPoint([d.latitude, d.longitude]).y)
-            .attr("r", 3)
+            .attr("r", vis.radiusSize)
             .on('mouseover', function (event, d) { //function to add mouseover event
                 d3.select(this).transition() //D3 selects the object we have moused over in order to perform operations on it
                     .duration('150') //how long we are transitioning between the two states (works like keyframes)
@@ -165,42 +229,6 @@ class LeafletMap {
                 d3.select('#tooltip').style('opacity', 0);//turn off the tooltip
 
             })
-            .on('click', (event, d) => { //experimental feature I was trying- click on point and then fly to it
-                // vis.newZoom = vis.theMap.getZoom()+2;
-                // if( vis.newZoom > 18)
-                //  vis.newZoom = 18; 
-                // vis.theMap.flyTo([d.latitude, d.longitude], vis.newZoom);
-            });
-
-        //handler here for updating the map, as you zoom in and out           
-        vis.theMap.on("zoomend", function () {
-            vis.updateVis();
-        });
-
-    }
-
-    updateVis() {
-        let vis = this;
-
-        //want to see how zoomed in you are? 
-        // console.log(vis.map.getZoom()); //how zoomed am I
-
-        //want to control the size of the radius to be a certain number of meters? 
-        vis.radiusSize = 3;
-
-        // if( vis.theMap.getZoom > 15 ){
-        //   metresPerPixel = 40075016.686 * Math.abs(Math.cos(map.getCenter().lat * Math.PI/180)) / Math.pow(2, map.getZoom()+8);
-        //   desiredMetersForPoint = 100; //or the uncertainty measure... =) 
-        //   radiusSize = desiredMetersForPoint / metresPerPixel;
-        // }
-
-
-
-        //redraw based on new zoom- need to recalculate on-screen position
-        vis.Dots
-            .attr("cx", d => vis.theMap.latLngToLayerPoint([d.latitude, d.longitude]).x)
-            .attr("cy", d => vis.theMap.latLngToLayerPoint([d.latitude, d.longitude]).y)
-            .attr("r", vis.radiusSize);
 
     }
 
