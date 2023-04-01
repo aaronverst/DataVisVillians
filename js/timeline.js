@@ -157,7 +157,6 @@ class Timeline {
         //     return orderedKeys.indexOf(a.key) - orderedKeys.indexOf(b.key);
         // });
 
-        console.log(vis.aggregatedData);
 
         vis.xValue = d => d[0];
         vis.yValue = d => d[1];
@@ -185,6 +184,7 @@ class Timeline {
     renderVis() {
 
         let vis = this;
+        const aggregatedDataMap = d3.rollups(vis.data, v => v.length, d => d.week_number);
 
         vis.xValue = d => d[0];
         vis.yValue = d => d[1];
@@ -225,20 +225,34 @@ class Timeline {
                     .text(Math.round(d[1]));
             })
 
-        // vis.brushG
-        //     .data(vis.aggregatedData)
-        //     .on('click', function (event, d) {
-        //         let value = arrayToObject(vis.aggregatedData, aggregatedDataMap);
-        //         console.log(value);
-        //         const isActive = callFilter.includes(value.key);
-        //         if (isActive) {
-        //             callFilter = callFilter.filter(f => f !== (value.key)); // Remove filter
-        //         } else {
-        //             callFilter.push(value.key); // Append filter
-        //         }
-        //         brushFilter(); // Call global function to update scatter plot
-        //         d3.select(this).classed('active', !isActive); // Add class to style active filters with CSS
-        //     });
+
+
+        vis.brushG
+            .call(vis.brush)
+            //.data(vis.aggregatedData)
+            .on('click', function (selection, range) {
+                const xPos = d3.pointer(event, this)[0]; // First array element is x, second is y
+                const date = vis.xScaleFocus.invert(xPos);
+                const index = vis.bisectDate(vis.aggregatedData, date, 1);
+                const a = vis.aggregatedData[index - 1];
+                console.log(a)
+                const b = vis.aggregatedData[index];
+                const d = b && (date - a[0] > b[0] - date) ? b : a;
+                console.log(index)
+                range = vis.xScaleContext.range()[1];
+                let start = b[0];
+                let end = index + 23;
+                if (selection) {
+                    const isActive = callFilter.includes(start, end);
+                    if (isActive) {
+                        callFilter = callFilter.filter(f => f !== (start, end)); // Remove filter
+                    } else {
+                        callFilter.push(start, end); // Append filter
+                    }
+                    brushFilter(); // Call global function to update scatter plot
+                    d3.select(this).classed('active', !isActive); // Add class to style active filters with CSS
+                }
+            });
 
 
         // Update the axes
@@ -255,23 +269,14 @@ class Timeline {
 
     brushed(selection) {
         let vis = this;
-        const aggregatedDataMap = d3.rollups(vis.data, v => v.length, d => d.week_number);
+
 
         // Check if the brush is still active or if it has been removed
         if (selection) {
             const selectedDomain = selection.map(vis.xScaleContext.invert, vis.xScaleContext);
+            console.log(vis.xScaleContext.invert);
+            console.log(vis.xScaleContext.range()[0]);
             // Convert given pixel coordinates (range: [x0,x1]) into a time period (domain: [Date, Date])
-            let value = arrayToObject(vis.aggregatedData, aggregatedDataMap);
-            console.log(value);
-            const isActive = callFilter.includes(value.key);
-            if (isActive) {
-                callFilter = callFilter.filter(f => f !== (value.key)); // Remove filter
-            } else {
-                callFilter.push(value.key); // Append filter
-            }
-            brushFilter(); // Call global function to update scatter plot
-            //d3.select(this).classed('active', !isActive); // Add class to style active filters with CSS
-
             // Update x-scale of the focus view accordingly
             vis.xScaleFocus.domain(selectedDomain);
         } else {
@@ -293,6 +298,5 @@ function arrayToObject(dataMap, data) {
     dataMap = dataMap.sort((a, b) => {
         return orderedKeys.indexOf(a.key) - orderedKeys.indexOf(b.key);
     });
-    console.log(dataMap);
     return dataMap;
 }
