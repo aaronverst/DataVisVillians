@@ -49,11 +49,13 @@ class WeekdayBarchart {
             .attr('height', vis.config.containerHeight);
 
         vis.svg.append("text")
-            .attr("transform", "translate(0,0)")
-            .attr("x", 135)
-            .attr("y", 10)
-            .attr("font-size", "14px")
-            .text("Number of 311 Calls made on each Weekday");
+        .attr("transform", `translate(${vis.width/2},${vis.config.margin.top})`) // Center the text horizontally
+        .attr("text-anchor", "middle") // Center the text horizontally
+        .attr("x", 50)
+        .attr("y", -10)
+        .attr("font-size", "14px")
+        .attr("font-weight", "bold") // Make the text bold
+        .text("Number of 311 Calls made on each Weekday");
 
         // Append group element that will contain our actual chart 
         // and position it according to the given margin config
@@ -90,20 +92,20 @@ class WeekdayBarchart {
 
         vis.xAxisG.append('text')
             .attr("transform", "translate(0,0)")
-            .attr("y", vis.height - 194)
-            .attr("x", vis.width - 65)
+            .attr("y", vis.height - 410)
+            .attr("x", vis.width - 200)
             .attr("font-size", "16px")
             .attr("stroke", "black")
-            .text("Number of Calls Made");
+            .text("Day of Week");
 
         vis.yAxisG.append('text')
-            .attr("transform", "rotate(-90)")
-            .attr("dy", "-13.5em")
-            .attr("y", vis.height - 125)
-            .attr("x", vis.width - 160)
-            .attr("font-size", "12px")
-            .attr("stroke", "black")
-            .text("Weekday");
+        .attr('class', 'legend')
+        .attr('text-anchor', 'middle')
+        .attr('transform', 'rotate(-90)')
+        .attr("stroke", "black")
+        .attr('x', -vis.height/2)
+        .attr('y', -vis.config.margin.left + 10)
+        .text('Number of Calls');
 
         const weekday = d3.rollups(vis.data, v => v.length, d => d.weekday);
 
@@ -144,7 +146,7 @@ class WeekdayBarchart {
             .style('opacity', 1)
             .style('fill', "#8AAC80")
             .on('mouseover', (event, d) => {
-                d3.select('#tooltip3')
+                d3.select('#tooltip6')
                     .style('display', 'block')
                     .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
                     .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
@@ -153,7 +155,17 @@ class WeekdayBarchart {
                     .html(`<div class="tooltip-title2">Number of Calls</div><ul>${d3.format(',')(d.count)} </ul>`);
             })
             .on('mouseleave', () => {
-                d3.select('#tooltip1').style('display', 'none');
+                d3.select('#tooltip6').style('display', 'none');
+            })
+            .on('click', function (event, d) {
+                const isActive = weekdayFilter.includes(d.key);
+                if (isActive) {
+                   weekdayFilter = weekdayFilter.filter(f => f !== d.key); // Remove filter
+                } else {
+                    weekdayFilter.push(d.key); // Append filter
+                }
+                WeekdayFilter(); // Call global function to update scatter plot
+                d3.select(this).classed('active', !isActive); // Add class to style active filters with CSS
             });
 
         // Update the axes because the underlying scales might have changed
