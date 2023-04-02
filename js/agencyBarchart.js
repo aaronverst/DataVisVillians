@@ -12,7 +12,7 @@ class agencyBarchart {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 1200,
             containerHeight: _config.containerHeight || 600,
-            margin: _config.margin || { top: 20, right: 40, bottom: 50, left: 75 },
+            margin: _config.margin || { top: 20, right: 40, bottom: 80, left: 75 },
             tooltipPadding: _config.tooltipPadding || 15
         }
         this.data = _data;
@@ -25,16 +25,6 @@ class agencyBarchart {
 
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
-
-        for (let i = 0; i < vis.data.length; i++) {
-            if (vis.data[i].agency_responsible != "Public Services" && vis.data[i].agency_responsible != "Cinc Building Dept"
-                && vis.data[i].agency_responsible != "City Manager's Office" && vis.data[i].agency_responsible != "Police Department"
-                && vis.data[i].agency_responsible != "Cinc Health Dept" && vis.data[i].agency_responsible != "Park Department"
-                && vis.data[i].agency_responsible != "Cin Water Works" && vis.data[i].agency_responsible != "Fire Dept"
-                && vis.data[i].agency_responsible != "Metropolitan Sewer" && vis.data[i].agency_responsible != "Dept of Trans and Eng") {
-                vis.data[i].agency_responsible = "Other";
-            };
-        };
 
         vis.xScale = d3.scaleBand()
             .range([0, vis.width])
@@ -61,11 +51,13 @@ class agencyBarchart {
             .attr('height', vis.config.containerHeight);
 
         vis.svg.append("text")
-            .attr("transform", "translate(0,0)")
-            .attr("x", 550)
-            .attr("y", 20)
-            .attr("font-size", "14px")
-            .text("Number of Calls for each Agency Responsible")
+        .attr("transform", `translate(${vis.width/2},${vis.config.margin.top})`) // Center the text horizontally
+        .attr("text-anchor", "middle") // Center the text horizontally
+        .attr("x", 80)
+        .attr("y", -10)
+        .attr("font-size", "14px")
+        .attr("font-weight", "bold") // Make the text bold
+        .text("Number of Calls for each Agency Responsible")
 
 
 
@@ -102,18 +94,9 @@ class agencyBarchart {
 
         // Set the scale input domains
 
-        vis.xAxisG.selectAll('g')
-            .selectAll("text")
-            .style("text-anchor", "end")
-            .attr("dx", "-.5em")
-            .attr("dy", ".4em")
-            .attr("font-size", "9px")
-            .attr("transform", "rotate(-30)");
-
-
         vis.xAxisG.append('text')
             .attr("transform", "translate(0,0)")
-            .attr("y", vis.height - 495)
+            .attr("y", vis.height - 460)
             .attr("x", vis.width - 550)
             .attr("font-size", "16px")
             .attr("stroke", "black")
@@ -122,8 +105,8 @@ class agencyBarchart {
         vis.yAxisG.append('text')
             .attr("transform", "rotate(-90)")
             .attr("dy", "-13.5em")
-            .attr("y", vis.height - 430)
-            .attr("x", vis.width - 1300)
+            .attr("y", vis.height - 410)
+            .attr("x", vis.width - 1290)
             .attr("font-size", "12px")
             .attr("stroke", "black")
             .text("Number of Calls");
@@ -135,7 +118,7 @@ class agencyBarchart {
         agency_responsible[10] = agency_responsible[6];
         agency_responsible[6] = swap;
         console.log(agency_responsible);
-        const aggregatedData = Array.from(agency_responsible, ([key, count]) => ({ key, count }));
+        let aggregatedData = Array.from(agency_responsible, ([key, count]) => ({ key, count }));
 
         // Filter the aggregatedData array to only include keys in the orderedKeys array
         vis.aggregatedData = aggregatedData.filter(d => orderedKeys.includes(d.key));
@@ -158,13 +141,6 @@ class agencyBarchart {
     renderVis() {
         let vis = this;
 
-        vis.xAxisG.selectAll('g')
-            .selectAll("text")
-            .style("text-anchor", "end")
-            .attr("dx", "-.5em")
-            .attr("dy", ".4em")
-            .attr("font-size", "9px")
-            .attr("transform", "rotate(-30)");
 
         // Add rectangles
         const bars = vis.chart.selectAll('.bar')
