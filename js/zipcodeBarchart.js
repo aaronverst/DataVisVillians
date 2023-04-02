@@ -12,7 +12,7 @@ class Zipcode {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 1000,
             containerHeight: _config.containerHeight || 500,
-            margin: _config.margin || { top: 20, right: 40, bottom: 35, left: 55 },
+            margin: _config.margin || { top: 20, right: 40, bottom: 55, left: 55 },
             tooltipPadding: _config.tooltipPadding || 15
         }
         this.data = _data;
@@ -50,10 +50,11 @@ class Zipcode {
 
         vis.svg.append("text")
             .attr("transform", "translate(0,0)")
-            .attr("x", 135)
+            .attr("x", 400)
             .attr("y", 10)
             .attr("font-size", "14px")
-            .text("Number of 311 Calls made on each Weekday");
+            .attr('font-weight', 'bold')
+            .text("Number of 311 Calls by Zip");
 
         // Append group element that will contain our actual chart 
         // and position it according to the given margin config
@@ -98,20 +99,20 @@ class Zipcode {
 
         vis.xAxisG.append('text')
             .attr("transform", "translate(0,0)")
-            .attr("y", vis.height - 194)
-            .attr("x", vis.width - 65)
+            .attr("y", vis.height - 382)
+            .attr("x", vis.width - 480)
             .attr("font-size", "16px")
             .attr("stroke", "black")
-            .text("Number of Calls Made");
+            .text("Zip Code");
 
         vis.yAxisG.append('text')
-            .attr("transform", "rotate(-90)")
-            .attr("dy", "-13.5em")
-            .attr("y", vis.height - 125)
-            .attr("x", vis.width - 160)
-            .attr("font-size", "12px")
-            .attr("stroke", "black")
-            .text("Weekday");
+        .attr('x', -vis.height/2)
+        .attr('y', -45)
+        .attr('transform', 'rotate(-90)')
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '14px')
+        .attr("stroke", "black")
+        .text('Number of Calls');
 
         let zipcode = d3.rollups(vis.data, v => v.length, d => d.zipcode);
         zipcode.splice(29, 1)
@@ -170,7 +171,7 @@ class Zipcode {
                     .html(`<div class="tooltip-title2">Number of Calls in Zipcode</div><ul>${d3.format(',')(d.count)} </ul>`);
             })
             .on('mouseleave', () => {
-                d3.select('#tooltip1').style('display', 'none');
+                d3.select('#tooltip3').style('display', 'none');
             })
             .on('click', function (event, d) {
                 const isActive = zipcodeFilter.includes(d.key);
