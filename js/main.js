@@ -60,10 +60,10 @@ d3.tsv('data/June_August_data_2.tsv')
         timeline = new Timeline({ parentElement: '#timeline' }, data);
         weekdayBarchart = new WeekdayBarchart({ parentElement: '#weekdayBarchart' }, data);
         agencyBarchart = new agencyBarchart({ parentElement: '#agencyBarchart' }, data);
-        //wordcloud = new Wordcloud({ parentElement: '#wordcloud' }, data);
         zipcode = new Zipcode({ parentElement: '#zipcode' }, data);
         serviceBarchart = new ServiceBarchart({parentElement: '#serviceBarchart' }, data);
         daysBetween = new DaysBetween({parentElement: '#days_between' }, data);
+        wordcloud = new Wordcloud({ parentElement: '#wordcloud' }, data);
 
         // CircleChart = new CircleChart({ parentElement: '#circlechart' }, data);
 
