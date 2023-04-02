@@ -1,4 +1,4 @@
-class Zipcode {
+class ServiceBarchart {
     /**
     * Class constructor with basic chart configuration
     * @param {Object}
@@ -12,7 +12,7 @@ class Zipcode {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 1000,
             containerHeight: _config.containerHeight || 500,
-            margin: _config.margin || { top: 20, right: 40, bottom: 35, left: 55 },
+            margin: _config.margin || { top: 20, right: 40, bottom: 90, left: 55 },
             tooltipPadding: _config.tooltipPadding || 15
         }
         this.data = _data;
@@ -22,24 +22,6 @@ class Zipcode {
     initVis() {
 
         let vis = this;
-
-        for (let i = 0; i < vis.data.length; i++) {
-            if (vis.data[i].service_code != "STRSGN" && vis.data[i].service_code != "LITR-PRV"
-                && vis.data[i].service_code != "TLGR-PRV" && vis.data[i].service_code != "MTL-FRN"
-                && vis.data[i].service_code != "DFLTPLC" && vis.data[i].service_code != "TGGDCLLC"
-                && vis.data[i].service_code != "TRASH-I" && vis.data[i].service_code != "DAPUB1"
-                && vis.data[i].service_code != "PLMB_DEF" && vis.data[i].service_code != "TRSHCRTR"
-                && vis.data[i].service_code != "RCYCLNG" && vis.data[i].service_code != "BLD-RES"
-                && vis.data[i].service_code != "RF-COLLT" && vis.data[i].service_code != "YDWSTA-J"
-                && vis.data[i].service_code != "REPAIR96" && vis.data[i].service_code != "YRDWSTTC"
-                && vis.data[i].service_code != "TIRES" && vis.data[i].service_code != "TRREPR"
-                && vis.data[i].service_code != "NCRHMNT" && vis.data[i].service_code != "DFLTCITY"
-                && vis.data[i].service_code != "MOLD" && vis.data[i].service_code != "PTHOLE"
-                && vis.data[i].service_code != "PRKNGYRD" && vis.data[i].service_code != "SVCCMPLT"
-                && vis.data[i].service_code != "CRNRCNOF" && vis.data[i].service_code != "DUMP-PVS") {
-                vis.data[i].service_code = "Other";
-            };
-        };
 
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
@@ -68,10 +50,11 @@ class Zipcode {
 
         vis.svg.append("text")
             .attr("transform", "translate(0,0)")
-            .attr("x", 135)
+            .attr("x", 420)
             .attr("y", 10)
             .attr("font-size", "14px")
-            .text("Number of 311 Calls made on each Weekday");
+            .attr('font-weight', 'bold')
+            .text("Service Codes by Category");
 
         // Append group element that will contain our actual chart 
         // and position it according to the given margin config
@@ -116,20 +99,20 @@ class Zipcode {
 
         vis.xAxisG.append('text')
             .attr("transform", "translate(0,0)")
-            .attr("y", vis.height - 194)
-            .attr("x", vis.width - 65)
+            .attr("y", vis.height - 330)
+            .attr("x", vis.width - 480)
             .attr("font-size", "16px")
             .attr("stroke", "black")
-            .text("Number of Calls Made");
+            .text("Service Code");
 
         vis.yAxisG.append('text')
             .attr("transform", "rotate(-90)")
             .attr("dy", "-13.5em")
-            .attr("y", vis.height - 125)
-            .attr("x", vis.width - 160)
-            .attr("font-size", "12px")
+            .attr("y", vis.height - 410)
+            .attr("x", vis.width - 1070)
+            .attr("font-size", "14px")
             .attr("stroke", "black")
-            .text("Weekday");
+            .text("Number of Calls");
 
         let serviceCode = d3.rollups(vis.data, v => v.length, d => d.service_code);
 
@@ -168,7 +151,7 @@ class Zipcode {
 
         // Add rectangles
         const bars = vis.chart.selectAll('.bar')
-            .data(vis.aggregatedData, d => d.zipcode)
+            .data(vis.aggregatedData, d => d.service_code)
             .join('rect')
             .attr('class', 'bar')
             .attr('width', vis.xScale.bandwidth())
@@ -179,7 +162,7 @@ class Zipcode {
             .style('opacity', 1)
             .style('fill', "#8AAC80")
             .on('mouseover', (event, d) => {
-                d3.select('#tooltip3')
+                d3.select('#tooltip4')
                     .style('display', 'block')
                     .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
                     .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
@@ -188,16 +171,16 @@ class Zipcode {
                     .html(`<div class="tooltip-title2">Number of Calls</div><ul>${d3.format(',')(d.count)} </ul>`);
             })
             .on('mouseleave', () => {
-                d3.select('#tooltip1').style('display', 'none');
+                d3.select('#tooltip4').style('display', 'none');
             })
             .on('click', function (event, d) {
-                const isActive = zipcodeFilter.includes(d.key);
+                const isActive = serviceFilter.includes(d.key);
                 if (isActive) {
-                    zipcodeFilter = zipcodeFilter.filter(f => f !== d.key); // Remove filter
+                    serviceFilter = serviceFilter.filter(f => f !== d.key); // Remove filter
                 } else {
-                    zipcodeFilter.push(d.key); // Append filter
+                    serviceFilter.push(d.key); // Append filter
                 }
-                zipFilter(); // Call global function to update scatter plot
+                ServiceFilter(); // Call global function to update scatter plot
                 d3.select(this).classed('active', !isActive); // Add class to style active filters with CSS
             });
 
