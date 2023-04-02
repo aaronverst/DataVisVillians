@@ -58,6 +58,7 @@ class Timeline {
             .attr("x", 240)
             .attr("y", 11)
             .attr("font-size", "14px")
+            .attr('font-weight', 'bold')
             .text("Number of Calls Made According to Week Number (June through August)");
 
         vis.focus = vis.svg.append('g')
